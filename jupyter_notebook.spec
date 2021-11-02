@@ -13,8 +13,12 @@ uniq = set(hidden)
 hidden = list(uniq)
 # Without this, we get no tree view
 hidden.append('notebook.tree')
+# jupyter lab
+hidden.append('jupyterlab')
 # Whats a notebook without pandas
 hidden.append('pandas')
+# Add pynacl
+hidden.append('pynacl')
 # Add default plotting engine
 hidden.append('matplotlib')
 # Required for IPython kernel

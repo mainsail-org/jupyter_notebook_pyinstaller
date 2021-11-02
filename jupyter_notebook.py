@@ -3,48 +3,32 @@ from logging import getLogger
 
 logger = getLogger(__name__)  # you can use other name
 
-def jupyter_notebook(arglist):
-    logger.info("epmt_notebook: %s", str(arglist))
 
-    mode = None
-    cmd_args = []
-    all_args = arglist
-    for index, arg in enumerate(all_args):
-        if arg == "kernel":
-            mode = "kernel"
-            pass
-        else:
-            cmd_args.append(arg)
+def jupyter_notebook():
+    import sys
+    from os.path import realpath
+    from os import getcwd
+    me = realpath(sys.argv[0])
+    logger.debug("Using %s as binary", me)
 
-    if mode == "kernel":  # run iPython kernel with passed ops
-        args = ["kernel"]
-        args.extend(cmd_args)
-        # This does not want argv[0]
-        logger.info("ipython kernel argv: %s", str(args))
-        from IPython import start_ipython
-        start_ipython(argv=args)
-    else:  # Run IPython Notebook with passed ops
-        import sys
-        from os.path import realpath
-        from os import getcwd
-        me = realpath(sys.argv[0])
-        logger.debug("Using %s as binary", me)
-        args = []
-        args.extend(["--notebook-dir=" + getcwd(),
-                     # If this is being run as a subcommand, be sure to insert it here, below example is for subcommand notebook
-                     # and also using argparse, note the -- to terminate argument parsing
-                     # "--KernelManager.kernel_cmd=['"+me+"', 'notebook', 'kernel', '--', '-f', '{connection_file}']"])
-                     "--KernelManager.kernel_cmd=['" + me + "', 'kernel', '-f', '{connection_file}']"])
-        args.extend(all_args)
-        logger.info("notebook argv: %s", str(args))
-        from notebook import notebookapp
-        notebookapp.launch_new_instance(argv=args)
-    return True
+    argm = [me, '-m' , 'ipykernel_launcher', '-f', '{connection_file}' ]
+   
+    arg_notebook = []
+    arg_notebook.extend(["--notebook-dir=" + getcwd(),
+                 # If this is being run as a subcommand, be sure to insert it here, below example is for subcommand notebook
+                 # and also using argparse, note the -- to terminate argument parsing
+                 # "--KernelManager.kernel_cmd=['"+me+"', 'notebook', 'kernel', '--', '-f', '{connection_file}']"])
+                 "--KernelManager.kernel_cmd=['" + me + "'-m , 'ipykernel_launcher', '-f', '{connection_file}']"])
 
+    logger.info(sys.path)
+    from notebook import notebookapp
+    notebookapp.launch_new_instance(argv=argm)
+    # from ipykernel import kernelapp as app 
+    # app.launch_new_instance()
 
 if __name__ == "__main__":
     import sys
     from logging import basicConfig, DEBUG
 
     basicConfig(level=DEBUG)
-    jupyter_notebook(sys.argv[:-1])
+    jupyter_notebook()

@@ -15,6 +15,8 @@ hidden = list(uniq)
 hidden.append('notebook.tree')
 # jupyter lab
 hidden.append('jupyterlab')
+hidden.append('jupyter_server')
+hidden.append('jupyterlab_server')
 # Whats a notebook without pandas
 hidden.append('pandas')
 # Add pynacl

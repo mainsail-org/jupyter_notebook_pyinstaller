@@ -6,13 +6,15 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-pyinstaller = "==4.5"
+pyinstaller = "==4.6"
 jedi = "*"
-pynacl = "*"
 jupyterlab = "*"
 jupyter-client = "*"
+jupyterlab_server = "*"
+jupyter_server = "*"
 jsonschema = "==4.1.2"
 virtualenv = "==16.2.0"
+jupyterlab-server = "*"
 
 [requires]
 python_version = "3.9"

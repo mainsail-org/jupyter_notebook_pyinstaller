@@ -1,34 +1,46 @@
-#!//usr/bin/env python3
-from logging import getLogger
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
 
-logger = getLogger(__name__)  # you can use other name
+import os
 
+HERE = os.path.dirname(__file__)
 
-def jupyter_notebook():
-    import sys
-    from os.path import realpath
-    from os import getcwd
-    me = realpath(sys.argv[0])
-    logger.debug("Using %s as binary", me)
+os.environ['JUPYTERLAB_SETTINGS_DIR'] = str(os.path.join(HERE, 'settings'))
 
-    argm = [me, '-m' , 'ipykernel_launcher', '-f', '{connection_file}' ]
-   
-    arg_notebook = []
-    arg_notebook.extend(["--notebook-dir=" + getcwd(),
-                 # If this is being run as a subcommand, be sure to insert it here, below example is for subcommand notebook
-                 # and also using argparse, note the -- to terminate argument parsing
-                 # "--KernelManager.kernel_cmd=['"+me+"', 'notebook', 'kernel', '--', '-f', '{connection_file}']"])
-                 "--KernelManager.kernel_cmd=['" + me + "'-m , 'ipykernel_launcher', '-f', '{connection_file}']"])
+from jupyterlab.labapp import LabApp
+from jupyterlab_server import LabServerApp, LabConfig
+from notebook.base.handlers import IPythonHandler, FileFindHandler
+from notebook.utils import url_path_join as ujoin
+import json
+from traitlets import Unicode
 
-    logger.info(sys.path)
-    from notebook import notebookapp
-    notebookapp.launch_new_instance(argv=argm)
-    # from ipykernel import kernelapp as app 
-    # app.launch_new_instance()
+with open(os.path.join(HERE, 'package.json')) as fid:
+    version = json.load(fid)['version']
 
-if __name__ == "__main__":
-    import sys
-    from logging import basicConfig, DEBUG
+class ListingsApp(LabApp):
+    base_url = '/'
+    default_url = Unicode('/lab',
+                          help='The default URL to redirect to from `/`')
 
-    basicConfig(level=DEBUG)
-    jupyter_notebook()
+    def init_webapp(self):
+        """initialize tornado webapp and httpserver.
+        """
+        super().init_webapp()
+        default_handlers = [
+            (
+                ujoin(self.base_url, r"/crypto/(.*)"), FileFindHandler,
+                 {'path': os.path.join(HERE, 'list')}
+            )
+        ]
+        self.web_app.add_handlers('.*$', default_handlers)
+
+    def start(self):
+        settings = self.web_app.settings
+
+        # By default, make terminals available.
+        settings.setdefault('terminals_available', True)
+
+        super().start()
+
+if __name__ == '__main__':
+    ListingsApp.launch_instance()

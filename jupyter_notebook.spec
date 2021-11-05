@@ -8,19 +8,33 @@ from PyInstaller.utils.hooks import collect_submodules
 from IPython import extensions as IPython_extensions
 
 # Required for notebook itself
-hidden = collect_submodules('notebook',filter=lambda name: name.endswith('handlers') and ".tests." not in name)
+hidden = collect_submodules('notebook',filter=lambda name: ".tests." not in name)
 uniq = set(hidden)
 hidden = list(uniq)
 # Without this, we get no tree view
 hidden.append('notebook.tree')
-# jupyter lab
-hidden.append('jupyterlab')
-hidden.append('jupyter_server')
-hidden.append('jupyterlab_server')
 # Whats a notebook without pandas
 hidden.append('pandas')
-# Add pynacl
-hidden.append('pynacl')
+hidden.append('jupyterlab_server')
+hidden.append('jupyter_server.services.api')
+hidden.append('jupyter_server.services.api.handlers')
+hidden.append('jupyter_server.services.config.handlers')
+hidden.append('jupyter_server.services.contents.handlers')
+hidden.append('jupyter_server.services.kernels.handlers')
+hidden.append('jupyter_server.kernelspecs')
+hidden.append('jupyter_server.kernelspecs.handlers')
+hidden.append('jupyter_server.nbconvert')
+hidden.append('jupyter_server.nbconvert.handlers')
+hidden.append('jupyter_server.services.nbconvert')
+hidden.append('jupyter_server.services.nbconvert.handler')
+hidden.append('jupyter_server.services.nbconvert.handlers')
+hidden.append('jupyter_server.services.security.handlers')
+hidden.append('jupyter_server.services.sessions.handlers')
+hidden.append('jupyter_server.services.shutdown')
+hidden.append('jupyter_server.view')
+hidden.append('jupyter_server.view.handlers')
+hidden.append('jinja2')
+
 # Add default plotting engine
 hidden.append('matplotlib')
 # Required for IPython kernel

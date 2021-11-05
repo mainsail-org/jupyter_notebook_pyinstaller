@@ -9,12 +9,11 @@ verify_ssl = true
 pyinstaller = "==4.6"
 jedi = "*"
 jupyterlab = "*"
-jupyter-client = "*"
-jupyterlab_server = "*"
-jupyter_server = "*"
 jsonschema = "==4.1.2"
 virtualenv = "==16.2.0"
-jupyterlab-server = "*"
+jupyter_server = "*"
+jupyterlab_server = "*"
+jinja2 = "*"
 
 [requires]
 python_version = "3.9"

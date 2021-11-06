@@ -6,6 +6,11 @@ from glob import glob
 import os.path
 from PyInstaller.utils.hooks import collect_submodules
 from IPython import extensions as IPython_extensions
+import jupyterlab_server
+import jupyter_server
+import jupyterlab
+import tornado
+import nbclassic 
 
 # Required for notebook itself
 hidden = collect_submodules('notebook',filter=lambda name: ".tests." not in name)
@@ -22,6 +27,7 @@ hidden.append('jupyter_server.services.config.handlers')
 hidden.append('jupyter_server.services.contents.handlers')
 hidden.append('jupyter_server.services.kernels.handlers')
 hidden.append('jupyter_server.kernelspecs')
+hidden.append('jupyter_server.templates')
 hidden.append('jupyter_server.kernelspecs.handlers')
 hidden.append('jupyter_server.nbconvert')
 hidden.append('jupyter_server.nbconvert.handlers')
@@ -34,7 +40,15 @@ hidden.append('jupyter_server.services.shutdown')
 hidden.append('jupyter_server.view')
 hidden.append('jupyter_server.view.handlers')
 hidden.append('jinja2')
-
+hidden.append('tornado')
+hidden.append('nbclassic')
+hidden.append('nbclassic.nbserver')
+hidden.append('nbclassic.tree')
+hidden.append('nbclassic.tree.handlers')
+hidden.append('nbclassic.notebook.handlers')
+hidden.append('nbclassic.notebook')
+hidden.append('nbclassic.edit')
+hidden.append('nbclassic.edit.handlers')
 # Add default plotting engine
 hidden.append('matplotlib')
 # Required for IPython kernel
@@ -47,10 +61,19 @@ print("Excluded modules: ",exclude)
 # Required for iPython, not sure why
 ipe_extra_datas = []
 IPython_extensions_path = os.path.split(IPython_extensions.__file__)[0]
+print(IPython_extensions_path)
+
 files = glob(os.path.join(IPython_extensions_path,"*.py"))
 for f in files:
     fn = "IPython/extensions/" + os.path.basename(f)
     ipe_extra_datas.append((f, '.'))
+
+# find jupyter server and copy the files 
+jupyter_server_path = os.path.split(jupyter_server.__file__)[0]
+ipe_extra_datas.append((jupyter_server_path , 'jupyter_server') )
+
+
+
 print("Extra data: ",ipe_extra_datas)
 
 a = Analysis(['jupyter_notebook.py'],
